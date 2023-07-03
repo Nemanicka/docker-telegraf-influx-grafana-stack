@@ -2,18 +2,18 @@ version: '3.6'
 services:
   telegraf:
     image: telegraf:1.18-alpine
+    container_name: telegraf
     volumes:
-    - ./telegraf/etc/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - ./telegraf/etc/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+      - //var/run/docker.sock:/var/run/docker.sock:ro
     depends_on:
       - influxdb
-        #links:
-        #- influxdb
+    # links:
+      # - influxdb
     ports:
       - '8125:8125/udp'
-        #network_mode: "host"  
-        #networks:
-        #- prjctr_hw
-
+    network_mode: "host"
+    
   influxdb:
     image: influxdb:1.8-alpine
     env_file: configuration.env
@@ -22,26 +22,22 @@ services:
     volumes:
       - ./:/imports
       - influxdb-data:/var/lib/influxdb
-        #network_mode: "host"  
-        #networks:
-        #- prjctr_hw
+    network_mode: "host"
 
   grafana:
     image: grafana/grafana:8.0.2
     depends_on:
       - influxdb
     env_file: configuration.env
-    links:
-      - influxdb
+    # links:
+    #   - influxdb
     ports:
-      - '9090:9090'
+      - '3000:3000'
     volumes:
       - grafana-data:/var/lib/grafana
       - ./grafana/provisioning/:/etc/grafana/provisioning/
       - ./grafana/dashboards/:/var/lib/grafana/dashboards/
-        #network_mode: "host"  
-        #networks:
-        #- prjctr_hw
+    network_mode: "host"
 
   app-back:
     image: nemanicka/prjctr_hw2_app
@@ -62,7 +58,8 @@ services:
         delay: 10s
       restart_policy:
         condition: on-failure
-    network_mode: "host"  
+    network_mode: "host"
+    user: root
 
   nginx:
     image: brunaobh/nginx

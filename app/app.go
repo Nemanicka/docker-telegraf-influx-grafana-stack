@@ -35,8 +35,6 @@ func (hook *ESLogHook) Levels() []log.Level {
 }
 
 func (hook *ESLogHook) Fire(entry *log.Entry) error {
-	// Execute your custom logic here
-
 	entryStr, err := entry.String()
 	if err != nil {
 		fmt.Println("Error converting log entry to string")
@@ -177,7 +175,7 @@ func init() {
 
 	_, perr := es.Ping()
 	if perr != nil {
-		fmt.Println("Cannot ping elasticsearch")
+		fmt.Println("Cannot ping elasticsearch, please wait")
 		os.Exit(1)
 	}
 
@@ -192,7 +190,7 @@ func init() {
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/health", Health)
-	r.HandleFunc("/flights", AllFlights).Methods("GET")
+	r.HandleFunc("/flights/all", AllFlights).Methods("GET")
 	r.HandleFunc("/flights", CreateFlight).Methods("POST")
 	r.HandleFunc("/flights", UpdateFlight).Methods("PUT")
 	r.HandleFunc("/flights", DeleteFlight).Methods("DELETE")

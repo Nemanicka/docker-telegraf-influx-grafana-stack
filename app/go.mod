@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/BurntSushi/toml v1.3.2
+	github.com/cactus/go-statsd-client/v5 v5.0.0
 	github.com/elastic/go-elasticsearch/v7 v7.17.0
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/mux v1.8.0

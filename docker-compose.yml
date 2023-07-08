@@ -38,19 +38,13 @@ services:
   #     - ./grafana/provisioning/:/etc/grafana/provisioning/
   #     - ./grafana/dashboards/:/var/lib/grafana/dashboards/
   #   network_mode: "host"
-
   app-back:
-    image: nemanicka/prjctr_hw2_app
+    image: nemanicka/prjctr_hw4_app
     container_name: app-back
-    #networks:
-    #- prjctr_hw
     ports: 
-     - '3030:3030'
+      - '3030:3030'
     depends_on:
       - mongodb
-      - elasticsearch
-        #links:
-        #- mongodb
     deploy:
       replicas: 1
       update_config:
@@ -59,28 +53,27 @@ services:
       restart_policy:
         condition: on-failure
     network_mode: "host"
-    user: root
 
-   nginx:
-     image: brunaobh/nginx
-     container_name: nginx
-     volumes: 
-             - ./nginx/conf/:/etc/nginx/conf.d/
-     ports:
-             - '80:80'
-             - '443:443'
-     depends_on:
-       - app-back
-     deploy:
-       replicas: 1
-       update_config:
-         parallelism: 2
-         delay: 10s
-       restart_policy:
-         condition: on-failure
+  nginx:
+    image: brunaobh/nginx
+    container_name: nginx
+    volumes: 
+            - ./nginx/conf/:/etc/nginx/conf.d/
+    ports:
+            - '80:80'
+            - '443:443'
+    depends_on:
+      - app-back
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
            #networks:
            #- prjctr_hw_nginx
-     network_mode: "host"  
+    network_mode: "host"  
   mongodb:
     image: brunaobh/mongodb
     container_name: mongodb

@@ -8,8 +8,6 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/elastic/go-elasticsearch/v7"
-
 	c "app/config"
 	d "app/dao"
 	m "app/models"
@@ -20,7 +18,6 @@ import (
 
 var config = c.Config{}
 var dao = d.FlightsDAO{}
-var es *elasticsearch.Client
 
 // GET list of flights
 func AllFlights(w http.ResponseWriter, r *http.Request) {
@@ -125,24 +122,7 @@ func init() {
 	dao.Database = config.Database
 	dao.Connect()
 
-	var err error
 	log.SetFormatter(&log.JSONFormatter{})
-
-	es, err = elasticsearch.NewClient(
-		elasticsearch.Config{Addresses: []string{"http://127.0.0.1:9200"}})
-	if err != nil {
-		fmt.Println(err, es)
-		os.Exit(1)
-	}
-
-	_, perr := es.Ping()
-	if perr != nil {
-		fmt.Println("Cannot ping elasticsearch, please wait")
-		os.Exit(1)
-	}
-
-	log.Println(elasticsearch.Version)
-	log.Println(es.Info())
 }
 
 // Define HTTP request routes

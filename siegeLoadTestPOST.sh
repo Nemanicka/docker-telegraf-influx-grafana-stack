@@ -1,1 +1,1 @@
-siege -c 19 -r 100 -d 0.5 'http://127.0.0.1/flights POST {"flightNum":"TEST14", "airline":"TAM", "airport":"Confins", "status":"Confirmed", "expected":"20180713083500", "confirmed":"20180713083500"}'  -H 'Content-Type: application/json'
+siege -c 1 -r 1 -d 0.5 'http://127.0.0.1/flights POST {"flightNum":"TEST14", "airline":"TAM", "airport":"Confins", "status":"Confirmed", "expected":"20180713083500", "confirmed":"20180713083500"}'  -H 'Content-Type: application/json'

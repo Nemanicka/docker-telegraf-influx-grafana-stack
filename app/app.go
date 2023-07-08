@@ -1,19 +1,14 @@
 package main
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
-	"strings"
-
-	"github.com/google/uuid"
 
 	log "github.com/sirupsen/logrus"
 
 	"github.com/elastic/go-elasticsearch/v7"
-	"github.com/elastic/go-elasticsearch/v7/esapi"
 
 	c "app/config"
 	d "app/dao"
@@ -26,39 +21,6 @@ import (
 var config = c.Config{}
 var dao = d.FlightsDAO{}
 var es *elasticsearch.Client
-
-type ESLogHook struct {
-}
-
-func (hook *ESLogHook) Levels() []log.Level {
-	return log.AllLevels
-}
-
-func (hook *ESLogHook) Fire(entry *log.Entry) error {
-	entryStr, err := entry.String()
-	if err != nil {
-		fmt.Println("Error converting log entry to string")
-	}
-
-	req := esapi.IndexRequest{
-		Index:      "log-prjctr",
-		DocumentID: uuid.New().String(),
-		Body:       strings.NewReader(entryStr),
-		Refresh:    "true",
-	}
-
-	res, reqErr := req.Do(context.Background(), es)
-	if reqErr != nil {
-		fmt.Printf("Error performing the request: %s\n", reqErr)
-	}
-	defer res.Body.Close()
-
-	if res.IsError() {
-		fmt.Printf("Error indexing document: %s\n", res.Status())
-	}
-
-	return nil
-}
 
 // GET list of flights
 func AllFlights(w http.ResponseWriter, r *http.Request) {
@@ -181,9 +143,6 @@ func init() {
 
 	log.Println(elasticsearch.Version)
 	log.Println(es.Info())
-
-	hook := &ESLogHook{}
-	log.AddHook(hook)
 }
 
 // Define HTTP request routes
